@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Expenses</title>
+</head>
+<body>
+    <h1>All Expenses</h1>
+
+    {% if expenses %}
+        <ul>
+            {% for expense in expenses %}
+                <li>{{ expense.title }} - ₹{{ expense.amount }} ({{ expense.category }}) on {{ expense.date }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No expenses added yet.</p>
+    {% endif %}
+
+    <a href="{% url 'add_expense' %}">➕ Add Expense</a> |
+    <a href="{% url 'home' %}">🏠 Home</a>
+</body>
+</html>
