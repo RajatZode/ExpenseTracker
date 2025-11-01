@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Expense</title>
-</head>
-<body>
-    <h1>Add New Expense</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
-
-    <a href="{% url 'home' %}">⬅ Back to Home</a>
-</body>
-</html>
+{% extends 'tracker/base.html' %}
+{% block content %}
+<div class="card shadow p-4 mt-4">
+  <h3 class="text-center mb-4">Add Expense</h3>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="text-center">
+      <button type="submit" class="btn btn-success mt-3">Save Expense</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

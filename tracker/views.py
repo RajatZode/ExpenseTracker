@@ -17,4 +17,5 @@ def add_expense(request):
 
 def view_expense(request):
     expenses = Expense.objects.all()
-    return render(request, 'tracker/view_expense.html', {'expenses': expenses})
+    total = sum(exp.amount for exp in expenses)
+    return render(request, 'tracker/view_expense.html', {'expenses': expenses, 'total': total})
