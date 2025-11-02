@@ -20,14 +20,14 @@ def signup(request):
             messages.error(request, "Passwords do not match.")
             return redirect("signup")
 
-        if username == "" or email == "":
+        if not username or not email:
             messages.error(request, "All fields are required.")
             return redirect("signup")
 
         try:
             user = User.objects.create_user(username=username, email=email, password=password1)
             user.save()
-            messages.success(request, "Account created successfully. Login now.")
+            messages.success(request, "Account created successfully. Please login.")
             return redirect("login")
         except:
             messages.error(request, "Username already exists.")
@@ -71,6 +71,7 @@ def add_expense(request):
             expense = form.save(commit=False)
             expense.user = request.user
             expense.save()
+            messages.success(request, "Expense added successfully!")
             return redirect('view_expenses')
     else:
         form = ExpenseForm()
@@ -88,7 +89,6 @@ def view_expenses(request):
 def analytics(request):
     expenses = Expense.objects.filter(user=request.user)
     category_data = expenses.values("category").annotate(total=Sum("amount"))
-
     return render(request, "tracker/analytics.html", {
         "category_data": category_data,
         "expenses": expenses

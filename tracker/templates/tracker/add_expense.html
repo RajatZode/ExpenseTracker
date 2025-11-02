@@ -1,18 +1,3 @@
-<<<<<<< HEAD
-{% extends 'tracker/base.html' %}
-{% block content %}
-<div class="card shadow p-4 mt-4">
-  <h3 class="text-center mb-4">Add Expense</h3>
-  <form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="text-center">
-      <button type="submit" class="btn btn-success mt-3">Save Expense</button>
-    </div>
-  </form>
-</div>
-{% endblock %}
-=======
 {% load static %}
 
 <!DOCTYPE html>
@@ -80,10 +65,9 @@
     </form>
 
     <div class="text-center mt-3">
-        <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+        <a href="{% url 'view_expenses' %}">View Expenses</a>
     </div>
 </div>
 
 </body>
 </html>
->>>>>>> f09493bb65c77a438e18ff3ad0c881223dc359ed
