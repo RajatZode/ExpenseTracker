@@ -6,6 +6,7 @@ from django.db.models import Sum
 
 from .models import Expense
 from .filters import ExpenseFilter
+from .forms import ExpenseForm
 
 
 def home(request):
@@ -88,11 +89,9 @@ def dashboard(request):
 def view_expenses(request):
     expenses = Expense.objects.filter(user=request.user).order_by('-date')
 
-    # Apply django-filter
     expense_filter = ExpenseFilter(request.GET, queryset=expenses)
-    expenses = expense_filter.qs  # Filtered data
+    expenses = expense_filter.qs
 
-    # Prepare graph data
     monthly_data = (
         expenses.values('date')
         .annotate(total=Sum('amount'))
@@ -105,4 +104,19 @@ def view_expenses(request):
         'monthly_data': monthly_data,
     }
 
-    return render(request, 'expenses/view_expenses.html', context)
+    return render(request, 'tracker/view_expenses.html', context)
+
+
+@login_required
+def add_expense(request):
+    if request.method == 'POST':
+        form = ExpenseForm(request.POST)
+        if form.is_valid():
+            expense = form.save(commit=False)
+            expense.user = request.user  
+            expense.save()
+            return redirect('view_expenses')
+    else:
+        form = ExpenseForm()
+
+    return render(request, 'tracker/add_expense.html', {'form': form})
