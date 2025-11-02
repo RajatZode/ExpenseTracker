@@ -3,8 +3,9 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-from .models import Expense
 from django.contrib.auth.models import User
+from .models import Expense
+from .forms import ExpenseForm
 
 
 def signup(request):
@@ -14,21 +15,20 @@ def signup(request):
         password1 = request.POST.get("password1")
         password2 = request.POST.get("password2")
 
-        # validation
+        # Validation
         if password1 != password2:
             messages.error(request, "Passwords do not match.")
             return redirect("signup")
 
-        if username == "" or email == "":
+        if not username or not email:
             messages.error(request, "All fields are required.")
             return redirect("signup")
 
         try:
             user = User.objects.create_user(username=username, email=email, password=password1)
             user.save()
-            messages.success(request, "Account created successfully. Login now.")
+            messages.success(request, "Account created successfully. Please login.")
             return redirect("login")
-
         except:
             messages.error(request, "Username already exists.")
             return redirect("signup")
@@ -65,39 +65,30 @@ def dashboard(request):
 
 @login_required(login_url='login')
 def add_expense(request):
-    if request.method == "POST":
-        title = request.POST.get("title")
-        amount = request.POST.get("amount")
-        category = request.POST.get("category")
-        date = request.POST.get("date")
-        description = request.POST.get("description")
-
-        Expense.objects.create(
-            user=request.user,
-            title=title,
-            amount=amount,
-            category=category,
-            date=date,
-            description=description
-        )
-        return redirect("view_expenses")
-
-    return render(request, "tracker/add_expense.html")
+    if request.method == 'POST':
+        form = ExpenseForm(request.POST)
+        if form.is_valid():
+            expense = form.save(commit=False)
+            expense.user = request.user
+            expense.save()
+            messages.success(request, "Expense added successfully!")
+            return redirect('view_expenses')
+    else:
+        form = ExpenseForm()
+    return render(request, 'tracker/add_expense.html', {'form': form})
 
 
 @login_required(login_url='login')
 def view_expenses(request):
     expenses = Expense.objects.filter(user=request.user).order_by("-date")
-    return render(request, "tracker/view_expenses.html", {"expenses": expenses})
+    total = expenses.aggregate(total_amount=Sum("amount"))["total_amount"] or 0
+    return render(request, "tracker/view_expenses.html", {"expenses": expenses, "total": total})
 
 
 @login_required(login_url='login')
 def analytics(request):
     expenses = Expense.objects.filter(user=request.user)
-
-    # Group by Category for Pie Chart
     category_data = expenses.values("category").annotate(total=Sum("amount"))
-
     return render(request, "tracker/analytics.html", {
         "category_data": category_data,
         "expenses": expenses

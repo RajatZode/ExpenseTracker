@@ -2,12 +2,10 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ✅ Keep the more general SECRET_KEY and ALLOWED_HOSTS
 SECRET_KEY = 'replace-this-with-any-random-text-123'
-
 DEBUG = True
-
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 INSTALLED_APPS = [
@@ -37,7 +35,10 @@ ROOT_URLCONF = 'expense_tracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],   # we use app templates, so leave it empty
+
+        # ✅ Merge both templates directories (app + project-level)
+        'DIRS': [BASE_DIR / 'templates'],
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -52,8 +53,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'expense_tracker.wsgi.application'
 
-
-# Database (SQLite default)
+# ✅ Database (SQLite default)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -61,8 +61,7 @@ DATABASES = {
     }
 }
 
-
-# Password validation
+# ✅ Password validation (keep standard Django validators)
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -78,20 +77,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
+# ✅ Internationalization
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
-
-# Static files
+# ✅ Static files
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static"
-]
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
+# ✅ Default settings
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'

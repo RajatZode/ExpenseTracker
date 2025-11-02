@@ -1,0 +1,15 @@
+{% extends 'tracker/base.html' %}
+
+{% block content %}
+<div class="card shadow p-4 mt-4 mx-auto" style="max-width: 600px;">
+    <h2 class="text-center mb-4">Add Expense</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group mb-3">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Save Expense</button>
+    </form>
+</div>
+{% endblock %}

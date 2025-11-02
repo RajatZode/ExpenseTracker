@@ -1,0 +1,9 @@
+{% extends 'tracker/base.html' %}
+{% block content %}
+<div class="text-center mt-5">
+  <h1 class="display-5">Welcome to Expense Tracker</h1>
+  <p class="lead mt-3">Easily manage and track your expenses!</p>
+  <a href="{% url 'add_expense' %}" class="btn btn-primary mt-3">Add Expense</a>
+  <a href="{% url 'view_expense' %}" class="btn btn-success mt-3">View Expenses</a>
+</div>
+{% endblock %}
